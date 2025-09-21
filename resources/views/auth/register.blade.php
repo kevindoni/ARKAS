@@ -4,7 +4,7 @@
 <body class="hold-transition register-page">
     <div class="register-box">
       <div class="register-logo">
-        <a href="{{ route('home') }}"><b>{{ config('app.name', 'Laravel') }}</b> 1.0</a>
+  <a href="{{ route('dashboard') }}"><b>{{ config('app.name', 'Laravel') }}</b> 1.0</a>
       </div>
 
       <div class="card">

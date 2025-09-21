@@ -60,8 +60,18 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.passwords.reset', ['request' => $request]);
         });
 
+        // Confirm Password view (required so the container can resolve the response)
+        Fortify::confirmPasswordView(function () {
+            return view('auth.passwords.confirm');
+        });
+
         Fortify::verifyEmailView(function () {
             return view('auth.verify');
+        });
+
+        // Two-Factor challenge view (needed so container can resolve response contract)
+        Fortify::twoFactorChallengeView(function () {
+            return view('auth.two-factor-challenge');
         });
     }
 }
