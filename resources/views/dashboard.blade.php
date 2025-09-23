@@ -8,16 +8,33 @@
 <style>
     .small-box { min-height: 140px; }
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
-    .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
-    .small-box h3.currency { font-size: 1.3rem; font-weight: 700; line-height: 0.9; }
-    .small-box h3.transaction-count { font-size: 1.4rem; font-weight: 700; line-height: 1; font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+    /* Konsistensi pada semua elemen h3 dalam small-box */
+    .small-box h3 { 
+        font-size: 1.45rem; 
+        font-weight: 700; 
+        line-height: 1.2;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        margin-bottom: 0.25rem;
+    }
+    /* Khusus untuk nilai mata uang */
+    .small-box h3.currency { 
+        font-size: 1.6rem; 
+        font-weight: 700; 
+        line-height: 1.1; 
+    }
+    /* Khusus untuk card dengan nilai total transaksi */
+    .small-box h3.transaction-count { 
+        font-size: 1.6rem; 
+        font-weight: 700; 
+        line-height: 1.1; 
+    }
     /* Ensure content doesn't collide with the absolute-positioned icon on the right */
     .small-box .inner {
         min-height: 100px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding-right: 120px; /* additional room for wider currency values */
+        padding: 15px 120px 15px 15px; /* konsisten padding di semua sisi */
         position: relative;
         z-index: 1; /* keep text layer above icon */
     }
@@ -26,51 +43,61 @@
         .small-box h3.currency {
             display: flex;
             align-items: baseline;
-            gap: .15rem;  /* reduced gap between prefix and amount */
-            font-size: 1.6rem; /* increased base size further, will auto-shrink via JS if needed */
+            gap: .15rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            line-height: 1;     /* tighter for single-line */
-            margin: 0;
+            line-height: 1.1;
+            margin: 0 0 0.25rem 0;
             max-width: 100%;
-            white-space: nowrap;      /* keep currency on a single line */
-            overflow: visible;        /* don't clip; JS ensures fit */
-            text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-            font-variant-numeric: tabular-nums; /* stable width digits */
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            font-variant-numeric: tabular-nums;
         }
         .small-box h3.currency .prefix { 
-            font-size: 0.6em;  /* even smaller prefix for more emphasis on amount */
+            font-size: 0.58em;
             font-weight: 600;
             opacity: 0.75;
             letter-spacing: 0;
-            padding-right: 0.1rem;
-            vertical-align: middle;
+            padding-right: 0.05rem;
+            vertical-align: baseline;
         }
         .small-box h3.currency .amount { 
-            display: inline-block; 
-            letter-spacing: -0.01em; 
-            transform-origin: left center; 
+            display: inline-block;
+            letter-spacing: 0;
+            transform-origin: left center;
             font-weight: 700;
         }
         .small-box .icon { z-index: 0; }
 
-        /* Progressively larger currency display on wider screens */
+        /* Ukuran font konsisten pada berbagai ukuran layar */
         @media (min-width: 992px) {
-            .small-box h3.currency { font-size: 1.7rem; }
-            .small-box h3.transaction-count { font-size: 1.5rem; }
+            .small-box h3 { font-size: 1.5rem; }
+            .small-box h3.currency { font-size: 1.75rem; }
+            .small-box h3.transaction-count { font-size: 1.75rem; }
         }
         @media (min-width: 1200px) {
-            .small-box h3.currency { font-size: 1.9rem; }
-            .small-box h3.transaction-count { font-size: 1.6rem; }
+            .small-box h3 { font-size: 1.55rem; }
+            .small-box h3.currency { font-size: 1.85rem; }
+            .small-box h3.transaction-count { font-size: 1.85rem; }
         }
         @media (min-width: 1400px) {
-            .small-box h3.currency { font-size: 2.1rem; }
-            .small-box h3.transaction-count { font-size: 1.7rem; }
+            .small-box h3 { font-size: 1.6rem; }
+            .small-box h3.currency { font-size: 1.95rem; }
+            .small-box h3.transaction-count { font-size: 1.95rem; }
         }
         @media (min-width: 1600px) {
-            .small-box h3.currency { font-size: 2.3rem; }
-            .small-box h3.transaction-count { font-size: 1.8rem; }
+            .small-box h3 { font-size: 1.65rem; }
+            .small-box h3.currency { font-size: 2.05rem; }
+            .small-box h3.transaction-count { font-size: 2.05rem; }
         }
-    .small-box p { font-size: .8rem; margin-bottom: 0; }
+    .small-box p { 
+        font-size: .85rem; 
+        margin: 0 0 0.3rem 0;
+        font-weight: 500;
+        opacity: 0.9;
+        line-height: 1.3;
+    }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
     .text-white .btn.btn-link { color: #fff; }
@@ -82,6 +109,29 @@
             max-width: 14.285714%;
         }
     }
+    /* Konsisten styling untuk footer pada semua card */
+    .small-box-footer {
+        position: relative;
+        text-align: center;
+        padding: 5px 0;
+        color: #fff;
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 500;
+        z-index: 10;
+        background-color: rgba(0, 0, 0, 0.1);
+        text-decoration: none !important;
+    }
+    .small-box-footer i {
+        margin-left: 5px;
+        vertical-align: middle;
+        font-size: 0.85em;
+    }
+    .small-box-footer:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+        color: #fff;
+    }
+    
     .bg-teal { background-color: #20c997 !important; color: #fff; }
     .bg-teal .small-box-footer { color: #fff; }
     .bg-orange { background-color: #fd7e14 !important; color: #fff; }
@@ -120,22 +170,30 @@
     .amount-in { color: #28a745; }
     .amount-out { color: #dc3545; }
 
-    /* Responsive tweaks for small widths to keep currency inside box */
+    /* Responsive tweaks for small widths to keep consistent layout */
     @media (max-width: 575.98px) {
+        .small-box h3 {
+            font-size: 1.3rem;
+            line-height: 1.15;
+        }
         .small-box h3.currency { 
-            font-size: 1.45rem; /* increased base size for small screens */
+            font-size: 1.4rem;
             line-height: 1.15; 
         }
         .small-box h3.transaction-count {
-            font-size: 1.3rem;
-            line-height: 1.1;
+            font-size: 1.4rem;
+            line-height: 1.15;
         }
         .small-box .inner { 
-            padding-right: 82px; /* Adjusted padding for icon */
+            padding: 12px 80px 12px 12px; /* konsisten padding pada layar kecil */
         }
         .small-box h3.currency .prefix { 
             font-size: 0.55em; 
-            opacity: 0.7;
+            opacity: 0.75;
+        }
+        .small-box p {
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
         }
     }
 </style>
@@ -665,7 +723,7 @@
 
 @push('scripts')
 <script>
-    // Improved auto-shrink function for currency values so they always fit on one line inside their box
+    // Optimized auto-shrink function for consistent currency display
     function autoshrinkCurrency() {
         const items = document.querySelectorAll('.small-box h3.currency');
         items.forEach((el) => {
@@ -678,39 +736,38 @@
             const parent = el.parentElement; // .inner
             if (!parent) return;
             
-            // Get container dimensions
+            // Get container dimensions with the updated padding
             const cs = window.getComputedStyle(parent);
             const pr = parseFloat(cs.paddingRight) || 0;
             const pl = parseFloat(cs.paddingLeft) || 0;
             
-            // Calculate available space more accurately
-            // Reserve more space for icon area on AdminLTE cards
-            const iconReserve = Math.max(70, pr);
+            // Calculate available space with our updated layout
+            const iconReserve = Math.max(75, pr);
             const maxWidth = Math.max(0, parent.clientWidth - pl - iconReserve);
             
-            // Calculate prefix width precisely
+            // Calculate prefix width precisely with updated styling
             const prefix = el.querySelector('.prefix');
             let prefixWidth = 0;
             if (prefix) {
                 const rect = prefix.getBoundingClientRect();
-                prefixWidth = rect.width + 6; // include gap with slight extra margin
+                prefixWidth = rect.width + 4; // reduced margin due to smaller prefix
             }
             
             // Calculate usable width for the amount
             const usable = Math.max(0, maxWidth - prefixWidth);
             
-            // Get current font size
+            // Get current font size based on our updated CSS
             let size = parseFloat(window.getComputedStyle(amount).fontSize);
             
-            // Set minimum font sizes based on viewport width for better readability
+            // Set minimum font sizes based on updated media queries
             const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-            let minSize = 15; // increased base minimum size further
+            let minSize = 14; // base minimum size
             
-            if (vw >= 1600) minSize = 21;
-            else if (vw >= 1400) minSize = 19;
-            else if (vw >= 1200) minSize = 18;
-            else if (vw >= 992) minSize = 17;
-            else if (vw >= 768) minSize = 16;
+            if (vw >= 1600) minSize = 18;
+            else if (vw >= 1400) minSize = 17;
+            else if (vw >= 1200) minSize = 16;
+            else if (vw >= 992) minSize = 15;
+            else if (vw >= 768) minSize = 14.5;
             
             // Check if shrinking is needed
             if (amount.scrollWidth > usable) {
