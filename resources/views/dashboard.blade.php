@@ -7,7 +7,7 @@
     .small-box { min-height: 140px; }
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
-    .small-box h3.currency { font-size: 1.5rem; font-weight: 700; line-height: 0.9; }
+    .small-box h3.currency { font-size: 1.3rem; font-weight: 700; line-height: 0.9; }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
