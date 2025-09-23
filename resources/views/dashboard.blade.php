@@ -9,7 +9,15 @@
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
     .small-box h3.currency { font-size: 1.3rem; font-weight: 700; line-height: 0.9; }
     /* Ensure content doesn't collide with the absolute-positioned icon on the right */
-    .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; padding-right: 72px; }
+    .small-box .inner {
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-right: 100px; /* extra room for wide icons */
+        position: relative;
+        z-index: 1; /* keep text layer above icon */
+    }
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; margin: 0; }
     /* Prevent long currency text from overflowing the card */
         .small-box h3.currency {
@@ -22,13 +30,14 @@
             margin: 0;
             max-width: 100%;
             white-space: nowrap;      /* keep currency on a single line */
-            overflow: hidden;         /* prevent spillover */
+            overflow: visible;        /* don't clip; JS ensures fit */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
             letter-spacing: 0.006em;  /* subtle tracking for readability */
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
         .small-box h3.currency .prefix { font-size: 0.88em; font-weight: 600; opacity: .9; letter-spacing: 0; }
-        .small-box h3.currency .amount { letter-spacing: 0.01em; }
+        .small-box h3.currency .amount { display: inline-block; letter-spacing: 0.01em; transform-origin: left center; }
+        .small-box .icon { z-index: 0; }
 
         /* Larger headline on desktop */
         @media (min-width: 1200px) {
@@ -644,12 +653,23 @@
                 amount.style.fontSize = size + 'px';
                 guard++;
             }
+            // If still overflowing at min size, scale down smoothly to fit
+            if (amount.scrollWidth > usable) {
+                const scale = Math.max(0.85, usable / amount.scrollWidth);
+                amount.style.transform = `scale(${scale})`;
+            } else {
+                amount.style.transform = '';
+            }
         });
     }
     // Run on load and when window resizes
     window.addEventListener('DOMContentLoaded', autoshrinkCurrency);
     window.addEventListener('load', autoshrinkCurrency);
     window.addEventListener('resize', autoshrinkCurrency);
+    window.addEventListener('load', () => {
+        // In case icon backgrounds/images load later
+        setTimeout(autoshrinkCurrency, 50);
+    });
     // Update time every minute using browser time for snappy UX (server timezone already set)
     function updateClock() {
         const el = document.getElementById('current-time');
