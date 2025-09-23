@@ -13,15 +13,17 @@
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; margin: 0; }
     /* Prevent long currency text from overflowing the card */
         .small-box h3.currency {
-            font-size: 1.3rem; /* base size, will auto-shrink via JS if needed */
+            font-size: 1.32rem; /* base size, will auto-shrink via JS if needed */
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1;     /* tighter for single-line */
             margin: 0;
             max-width: 100%;
             white-space: nowrap;      /* keep currency on a single line */
             overflow: hidden;         /* prevent spillover */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-    }
+            letter-spacing: 0.01em;   /* slight tracking for readability */
+            font-variant-numeric: tabular-nums; /* stable width digits */
+        }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
@@ -595,24 +597,29 @@
     function autoshrinkCurrency() {
         const items = document.querySelectorAll('.small-box h3.currency');
         items.forEach((el) => {
-            // Reset to base size before measuring
+            // Skip if already processed for this layout cycle
             el.style.fontSize = '';
             const parent = el.parentElement; // .inner
             if (!parent) return;
-            const maxWidth = parent.clientWidth - 76; // leave space for right padding/icon
+            const cs = window.getComputedStyle(parent);
+            const pr = parseFloat(cs.paddingRight) || 0;
+            const pl = parseFloat(cs.paddingLeft) || 0;
+            // Reserve extra for icon area (AdminLTE icon size ~60-70px)
+            const iconReserve = Math.max(56, pr);
+            const maxWidth = Math.max(0, parent.clientWidth - pl - iconReserve);
             let size = parseFloat(window.getComputedStyle(el).fontSize);
             const minSize = 12; // px safety minimum
-            // Reduce size until it fits on one line
-            // Guard: avoid infinite loops, max 12 steps
-            let steps = 0;
-            while (el.scrollWidth > maxWidth && size > minSize && steps < 12) {
-                size -= 1;
+            let guard = 0;
+            // Use fractional decrements for smoother visual result
+            while (el.scrollWidth > maxWidth && size > minSize && guard < 40) {
+                size -= 0.5;
                 el.style.fontSize = size + 'px';
-                steps++;
+                guard++;
             }
         });
     }
     // Run on load and when window resizes
+    window.addEventListener('DOMContentLoaded', autoshrinkCurrency);
     window.addEventListener('load', autoshrinkCurrency);
     window.addEventListener('resize', autoshrinkCurrency);
     // Update time every minute using browser time for snappy UX (server timezone already set)
