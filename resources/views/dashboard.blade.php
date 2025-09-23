@@ -10,6 +10,7 @@
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
     .small-box h3.currency { font-size: 1.3rem; font-weight: 700; line-height: 0.9; }
+    .small-box h3.transaction-count { font-size: 2rem; font-weight: 700; line-height: 1; font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
     /* Ensure content doesn't collide with the absolute-positioned icon on the right */
     .small-box .inner {
         min-height: 100px;
@@ -54,15 +55,19 @@
         /* Progressively larger currency display on wider screens */
         @media (min-width: 992px) {
             .small-box h3.currency { font-size: 1.7rem; }
+            .small-box h3.transaction-count { font-size: 2.2rem; }
         }
         @media (min-width: 1200px) {
             .small-box h3.currency { font-size: 1.9rem; }
+            .small-box h3.transaction-count { font-size: 2.4rem; }
         }
         @media (min-width: 1400px) {
             .small-box h3.currency { font-size: 2.1rem; }
+            .small-box h3.transaction-count { font-size: 2.6rem; }
         }
         @media (min-width: 1600px) {
             .small-box h3.currency { font-size: 2.3rem; }
+            .small-box h3.transaction-count { font-size: 2.8rem; }
         }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
@@ -119,6 +124,10 @@
         .small-box h3.currency { 
             font-size: 1.45rem; /* increased base size for small screens */
             line-height: 1.15; 
+        }
+        .small-box h3.transaction-count {
+            font-size: 1.8rem;
+            line-height: 1.1;
         }
         .small-box .inner { 
             padding-right: 82px; /* Adjusted padding for icon */
@@ -322,7 +331,7 @@
                         })
                         ->count();
                 @endphp
-                <h3>{{ $bnuBpuTransactions }}</h3>
+                <h3 class="transaction-count">{{ $bnuBpuTransactions }}</h3>
                 <p>Total Transaksi BNU+BPU</p>
             </div>
             <div class="icon"><i class="fas fa-exchange-alt"></i></div>
@@ -343,7 +352,7 @@
                         })
                         ->count();
                 @endphp
-                <h3>{{ $pendingTransactions }}</h3>
+                <h3 class="transaction-count">{{ $pendingTransactions }}</h3>
                 <p>Transaksi Perlu Review</p>
             </div>
             <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
