@@ -13,6 +13,9 @@
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; margin: 0; }
     /* Prevent long currency text from overflowing the card */
         .small-box h3.currency {
+            display: flex;
+            align-items: baseline;
+            gap: .25rem;
             font-size: 1.32rem; /* base size, will auto-shrink via JS if needed */
             font-weight: 700;
             line-height: 1;     /* tighter for single-line */
@@ -21,9 +24,11 @@
             white-space: nowrap;      /* keep currency on a single line */
             overflow: hidden;         /* prevent spillover */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-            letter-spacing: 0.01em;   /* slight tracking for readability */
+            letter-spacing: 0.005em;  /* subtle tracking for readability */
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
+        .small-box h3.currency .prefix { font-size: 0.88em; font-weight: 600; opacity: .9; letter-spacing: 0; }
+        .small-box h3.currency .amount { letter-spacing: 0.01em; }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
@@ -111,7 +116,7 @@
                         ->where('uraian', 'like', '%Dana BOS%')
                         ->sum('penerimaan');
                 @endphp
-                <h3 class="currency">Rp {{ number_format((int)$danaBos, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)$danaBos, 0, ',', '.') }}</span></h3>
                 <p>Total Terima Dana BOS</p>
             </div>
             <div class="icon"><i class="fas fa-school"></i></div>
@@ -123,7 +128,7 @@
     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3 class="currency">{{ $latestBku ? 'Rp ' . number_format($latestBku->saldo, 0, ',', '.') : 'Rp 0' }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ $latestBku ? number_format($latestBku->saldo, 0, ',', '.') : '0' }}</span></h3>
                 <p>Saldo Buku Kas Umum Bulan Ini</p>
             </div>
             <div class="icon"><i class="fas fa-wallet"></i></div>
@@ -142,7 +147,7 @@
                         ->latest('tanggal')
                         ->first();
                 @endphp
-                <h3 class="currency">{{ $saldoBankBenar ? 'Rp ' . number_format($saldoBankBenar->saldo, 0, ',', '.') : 'Rp 0' }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ $saldoBankBenar ? number_format($saldoBankBenar->saldo, 0, ',', '.') : '0' }}</span></h3>
                 <p>Saldo Bank Terkini</p>
             </div>
             <div class="icon"><i class="fas fa-university"></i></div>
@@ -168,7 +173,7 @@
                         ->first();
                     $saldoTunaiActual = $latestTunaiEntry ? $latestTunaiEntry->saldo : 0;
                 @endphp
-                <h3 class="currency">{{ 'Rp ' . number_format((int)$saldoTunaiActual, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)$saldoTunaiActual, 0, ',', '.') }}</span></h3>
                 <p>Saldo Kas Tunai Terkini</p>
             </div>
             <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
@@ -213,7 +218,7 @@
                     // Karena ini menunjukkan volume pajak yang benar-benar dibayar
                     $taxDisplayValue = $taxPengeluaranBulanIni;
                 @endphp
-                <h3 class="currency">Rp {{ number_format((int)$taxDisplayValue, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)$taxDisplayValue, 0, ',', '.') }}</span></h3>
                 <p>Pajak Disetor Bulan Ini</p>
             </div>
             <div class="icon"><i class="fas fa-receipt"></i></div>
@@ -239,7 +244,7 @@
                 @php
                     $totalBalance = (int)(($latestBku ? $latestBku->saldo : 0) + ($latestTunai ? $latestTunai->saldo : 0));
                 @endphp
-                <h3 class="currency">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format($totalBalance, 0, ',', '.') }}</span></h3>
                 <p>Total Saldo Semua Kas</p>
             </div>
             <div class="icon"><i class="fas fa-coins"></i></div>
@@ -294,7 +299,7 @@
     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
         <div class="small-box bg-success">
             <div class="inner">
-                <h3 class="currency">{{ 'Rp ' . number_format((int)($bkuStats['monthly_penerimaan'] ?? 0), 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)($bkuStats['monthly_penerimaan'] ?? 0), 0, ',', '.') }}</span></h3>
                 <p>Total Penerimaan BKU Umum</p>
             </div>
             <div class="icon"><i class="fas fa-arrow-down"></i></div>
@@ -306,7 +311,7 @@
     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3 class="currency">{{ 'Rp ' . number_format((int)($bkuStats['monthly_pengeluaran'] ?? 0), 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)($bkuStats['monthly_pengeluaran'] ?? 0), 0, ',', '.') }}</span></h3>
                 <p>Total Pengeluaran BKU Umum</p>
             </div>
             <div class="icon"><i class="fas fa-arrow-up"></i></div>
@@ -323,7 +328,7 @@
                     $totalTunaiPenerimaan = \App\Models\TunaiMasterEntry::where('user_id', auth()->id())
                         ->sum('penerimaan');
                 @endphp
-                <h3 class="currency">{{ 'Rp ' . number_format((int)$totalTunaiPenerimaan, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)$totalTunaiPenerimaan, 0, ',', '.') }}</span></h3>
                 <p>Total Penerimaan BKU Tunai</p>
             </div>
             <div class="icon"><i class="fas fa-coins"></i></div>
@@ -341,7 +346,7 @@
                         ->sum('pengeluaran');
                     $totalTunaiNet = $totalTunaiPenerimaan - $totalTunaiPengeluaran;
                 @endphp
-                <h3 class="currency">{{ 'Rp ' . number_format((int)$totalTunaiPengeluaran, 0, ',', '.') }}</h3>
+                <h3 class="currency"><span class="prefix">Rp</span><span class="amount">{{ number_format((int)$totalTunaiPengeluaran, 0, ',', '.') }}</span></h3>
                 <p>Total Pengeluaran BKU Tunai</p>
             </div>
             <div class="icon"><i class="fas fa-money-bill-alt"></i></div>
@@ -599,6 +604,8 @@
         items.forEach((el) => {
             // Skip if already processed for this layout cycle
             el.style.fontSize = '';
+            const amount = el.querySelector('.amount') || el;
+            amount.style.fontSize = '';
             const parent = el.parentElement; // .inner
             if (!parent) return;
             const cs = window.getComputedStyle(parent);
@@ -607,13 +614,21 @@
             // Reserve extra for icon area (AdminLTE icon size ~60-70px)
             const iconReserve = Math.max(56, pr);
             const maxWidth = Math.max(0, parent.clientWidth - pl - iconReserve);
-            let size = parseFloat(window.getComputedStyle(el).fontSize);
+            // Available width for amount is total minus prefix width and gap
+            const prefix = el.querySelector('.prefix');
+            let prefixWidth = 0;
+            if (prefix) {
+                const rect = prefix.getBoundingClientRect();
+                prefixWidth = rect.width + 4; // include small gap
+            }
+            const usable = Math.max(0, maxWidth - prefixWidth);
+            let size = parseFloat(window.getComputedStyle(amount).fontSize);
             const minSize = 12; // px safety minimum
             let guard = 0;
             // Use fractional decrements for smoother visual result
-            while (el.scrollWidth > maxWidth && size > minSize && guard < 40) {
+            while (amount.scrollWidth > usable && size > minSize && guard < 40) {
                 size -= 0.5;
-                el.style.fontSize = size + 'px';
+                amount.style.fontSize = size + 'px';
                 guard++;
             }
         });
