@@ -26,7 +26,7 @@
         .small-box h3.currency {
             display: flex;
             align-items: baseline;
-            gap: .2rem;
+            gap: .15rem;  /* reduced gap between prefix and amount */
             font-size: 1.6rem; /* increased base size further, will auto-shrink via JS if needed */
             font-weight: 700;
             line-height: 1;     /* tighter for single-line */
@@ -38,11 +38,12 @@
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
         .small-box h3.currency .prefix { 
-            font-size: 0.7em;  /* smaller prefix for more emphasis on amount */
+            font-size: 0.6em;  /* even smaller prefix for more emphasis on amount */
             font-weight: 600;
-            opacity: 0.82;
+            opacity: 0.75;
             letter-spacing: 0;
             padding-right: 0.1rem;
+            vertical-align: middle;
         }
         .small-box h3.currency .amount { 
             display: inline-block; 
@@ -133,7 +134,8 @@
             padding-right: 82px; /* Adjusted padding for icon */
         }
         .small-box h3.currency .prefix { 
-            font-size: 0.7em; 
+            font-size: 0.55em; 
+            opacity: 0.7;
         }
     }
 </style>
