@@ -8,6 +8,19 @@
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
     .small-box h3.currency { font-size: 1.3rem; font-weight: 700; line-height: 0.9; }
+    /* Ensure content doesn't collide with the absolute-positioned icon on the right */
+    .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; padding-right: 72px; }
+    .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; margin: 0; }
+    /* Prevent long currency text from overflowing the card */
+    .small-box h3.currency {
+        font-size: 1.35rem; /* slightly smaller to fit narrow column */
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 0;
+        max-width: 100%;
+        white-space: normal; /* allow wrapping to next line (e.g., after 'Rp') */
+        overflow-wrap: break-word; /* wrap long continuous text if needed */
+    }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
@@ -44,6 +57,12 @@
     .transaction-amount { font-weight: bold; }
     .amount-in { color: #28a745; }
     .amount-out { color: #dc3545; }
+
+    /* Responsive tweaks for small widths to keep currency inside box */
+    @media (max-width: 575.98px) {
+        .small-box h3.currency { font-size: 1.2rem; line-height: 1.15; }
+        .small-box .inner { padding-right: 64px; }
+    }
 </style>
 @endpush
 
