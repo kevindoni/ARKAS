@@ -40,21 +40,22 @@ class BKUController extends Controller
             ];
 
             // Get unique patterns from existing data (only transactions with values)
+            // Use limit() instead of take() for better performance and proper SQL LIMIT
             $terimaEntries = \App\Models\BkuMasterEntry::where('uraian', 'like', '%Terima%')
                 ->where(function($q) {
                     $q->where('penerimaan', '>', 0)->orWhere('pengeluaran', '>', 0);
                 })
                 ->distinct()
-                ->pluck('uraian')
-                ->take(100); // Limit to avoid memory issues
+                ->limit(50) // Reduced limit for better performance
+                ->pluck('uraian');
 
             $setorEntries = \App\Models\BkuMasterEntry::where('uraian', 'like', '%Setor%')
                 ->where(function($q) {
                     $q->where('penerimaan', '>', 0)->orWhere('pengeluaran', '>', 0);
                 })
                 ->distinct()
-                ->pluck('uraian')
-                ->take(100);
+                ->limit(50) // Reduced limit for better performance
+                ->pluck('uraian');
 
             // Extract patterns from Terima transactions
             foreach ($terimaEntries as $uraian) {
@@ -1010,7 +1011,13 @@ class BKUController extends Controller
     public function masterUpload(Request $request)
     {
         $data = $request->validate([
-            'file' => ['required', 'file', 'mimes:xlsx', 'max:5120'] // up to ~5MB
+            'file' => [
+                'required', 
+                'file', 
+                'mimes:xlsx', 
+                'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'max:5120' // up to ~5MB
+            ]
         ]);
 
         if (!$request->hasFile('file')) {
@@ -1368,7 +1375,13 @@ class BKUController extends Controller
         \Log::info('TunaiUpload called', ['files' => $request->hasFile('file')]);
         
         $data = $request->validate([
-            'file' => ['required', 'file', 'mimes:xlsx', 'max:5120'] // up to ~5MB
+            'file' => [
+                'required', 
+                'file', 
+                'mimes:xlsx', 
+                'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'max:5120' // up to ~5MB
+            ]
         ]);
         
         \Log::info('TunaiUpload validation passed');

@@ -7,6 +7,7 @@
   [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
   [![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?style=flat&logo=php)](https://php.net)
   [![AdminLTE](https://img.shields.io/badge/AdminLTE-3.x-007bff?style=flat)](https://adminlte.io)
+  [![Version](https://img.shields.io/badge/Version-1.1.0-28a745?style=flat)](https://github.com/kevindoni/ARKAS/releases)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
@@ -51,7 +52,68 @@
 
 ---
 
-## 📋 **Requirements**
+## 📟 **Application Version**
+
+-   **Current Version**: `1.1.0` (September 23, 2025)
+-   **Release Channel**: Stable
+-   **Build Number**: `2025.09.23`
+-   **Minimum Requirements**: PHP 8.4+, Laravel 12.x
+-   **Database Schema**: Version 13 (13 migrations)
+
+### **Version Access in Code**
+
+```php
+// Access version in your application
+$version = config('app.version'); // Returns: "1.1.0"
+$appName = config('app.name');    // Returns: "Arkas App"
+```
+
+---
+
+## � **Recent Bug Fixes & Improvements**
+
+### 🛠️ **Version 1.1.0 - September 23, 2025**
+
+#### **🐛 Critical Bug Fixes**
+
+-   **✅ Fixed HTML Duplicate Attributes**: Removed duplicate `name` attributes in registration forms
+-   **✅ Fixed Email Configuration Error**: Resolved `An email must have a "From" or a "Sender" header` error during registration
+-   **✅ Fixed Composer Installation Issues**: Resolved ZIP extraction problems with `--prefer-source` installation method
+-   **✅ Fixed MySQL Authentication**: Configured proper MySQL connection for Laravel with MySQL 8.4+
+
+#### **🔒 Security Improvements**
+
+-   **✅ Enhanced File Upload Security**: Added strict MIME type validation (`mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`)
+-   **✅ Fixed Race Condition in Admin Management**: Implemented database transactions with `lockForUpdate()` for admin role changes
+-   **✅ Improved Input Validation**: Enhanced validation rules across all controllers
+
+#### **⚡ Performance Optimizations**
+
+-   **✅ Optimized Database Queries**: Changed `take()` to `limit()` and reduced query limits from 100 to 50 records
+-   **✅ Better Memory Management**: Prevented potential memory leaks in `getTaxKeywordsFromDatabase()` method
+-   **✅ Cached Configurations**: Implemented proper config and route caching
+
+#### **🎯 Enhanced Error Handling**
+
+-   **✅ Improved 2FA Error Messages**: Added detailed error logging and user-friendly messages in SecurityController
+-   **✅ Better File Upload Feedback**: Enhanced error messages for invalid files and upload failures
+-   **✅ Comprehensive Logging**: Added structured logging for debugging and monitoring
+
+#### **📱 User Experience Improvements**
+
+-   **✅ Fixed Email Verification Flow**: Disabled automatic email verification or configured proper SMTP settings
+-   **✅ Better Form Validation**: Improved user feedback for validation errors
+-   **✅ Responsive Design Fixes**: Ensured proper display across all devices
+
+#### **🗃️ Database Enhancements**
+
+-   **✅ Migration Fixes**: Resolved decimal column precision issues in BKU tables
+-   **✅ Proper Foreign Key Constraints**: Enhanced data integrity with proper relationships
+-   **✅ Optimized Indexes**: Improved query performance with strategic indexing
+
+---
+
+## �📋 **Requirements**
 
 -   **PHP** >= 8.4.0
 -   **Laravel** >= 12.x
@@ -69,6 +131,7 @@
 git clone https://github.com/kevindoni/ARKAS.git
 cd ARKAS
 composer install
+composer dump-autoload
 ```
 
 ### 2. **Environment Configuration**
@@ -76,6 +139,9 @@ composer install
 ```bash
 cp .env.example .env
 php artisan key:generate
+
+# Set application version (optional, defaults to 1.1.0)
+# Add to .env: APP_VERSION=1.1.0
 ```
 
 ### 3. **Database Setup**
@@ -105,10 +171,84 @@ php artisan db:seed --class=AdminUserSeeder
 php artisan serve
 ```
 
+---
+
+## 🚨 **Troubleshooting Guide**
+
+### **Common Installation Issues**
+
+#### **1. Composer ZIP Extraction Error**
+
+```bash
+# Problem: "Cannot open the file as archive"
+# Solution: Use prefer-source installation
+composer install --prefer-source --no-dev
+```
+
+#### **2. MySQL Authentication Error**
+
+```bash
+# Problem: "Plugin 'mysql_native_password' is not loaded"
+# Solution: Update .env for MySQL 8.4+
+MAIL_FROM_ADDRESS=admin@arkas.test
+MAIL_MAILER=log
+```
+
+#### **3. Email Configuration Error**
+
+```bash
+# Problem: "An email must have a 'From' or a 'Sender' header"
+# Solution: Configure email in .env
+MAIL_FROM_ADDRESS=admin@yourapp.com
+MAIL_FROM_NAME="Your App Name"
+```
+
+#### **4. Environment File Parse Error**
+
+```bash
+# Problem: "Failed to parse dotenv file"
+# Solution: Quote values with spaces
+APP_NAME="Your App Name"
+```
+
+#### **5. PHP Extensions Missing**
+
+```bash
+# Problem: "ext-zip * -> it is missing from your system"
+# Solution: Enable PHP extensions in php.ini
+extension=zip
+extension=pdo_mysql
+```
+
+### **Development Commands**
+
+```bash
+# Clear all caches
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Reset database
+php artisan migrate:fresh --seed
+
+# Generate application key
+php artisan key:generate
+
+# Check system status
+php artisan migrate:status
+php artisan --version
+```
+
+---
+
 **Default Admin Access**:
 
--   Email: `admin@admin.com`
--   Password: `password`
+-   **Email**: `admin@admin.com`
+-   **Password**: `password`
+-   **Role**: Administrator with full system access
+
+> 📌 **Security Note**: Change default admin credentials immediately after first login!
 
 ---
 
@@ -207,7 +347,56 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 **Acknowledgments**
+## � **Changelog**
+
+### **[1.1.0] - 2025-09-23**
+
+#### Added ✨
+
+-   Comprehensive troubleshooting guide in README
+-   Enhanced error handling with detailed logging
+-   Database transaction support for critical operations
+-   Strict MIME type validation for file uploads
+
+#### Fixed 🐛
+
+-   HTML duplicate attributes in registration forms
+-   Email configuration errors during user registration
+-   Composer installation issues with ZIP extraction
+-   MySQL 8.4+ authentication compatibility
+-   Race conditions in admin role management
+-   Memory optimization in database queries
+
+#### Changed 🔄
+
+-   Improved file upload security validation
+-   Enhanced error messages for better user experience
+-   Optimized database query performance
+-   Updated documentation with installation troubleshooting
+
+#### Security 🔒
+
+-   Added lockForUpdate() for admin operations
+-   Enhanced file upload MIME type validation
+-   Improved input validation across controllers
+-   Better error logging without exposing sensitive data
+
+### **[1.0.0] - 2025-09-20**
+
+#### Added ✨
+
+-   Initial release of ARKAS BKU System
+-   Multi-tenant architecture with data isolation
+-   BKU and Tunai financial management
+-   Excel import/export functionality
+-   Two-factor authentication (2FA)
+-   Role-based access control
+-   Admin dashboard with subscription monitoring
+-   User dashboard with financial overview
+
+---
+
+## �🙏 **Acknowledgments**
 
 -   **Laravel Framework** - Robust PHP framework
 -   **AdminLTE 3** - Beautiful admin dashboard template

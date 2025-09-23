@@ -60,21 +60,27 @@ class UsersController extends Controller
             'is_admin' => ['nullable', 'boolean'],
         ]);
 
-        // Protect against removing the last admin
-        $isAdmin = (bool)($validated['is_admin'] ?? false);
-        if (!$isAdmin && ($user->is_admin ?? false)) {
-            $otherAdmins = User::where('id', '!=', $user->id)->where('is_admin', true)->count();
-            if ($otherAdmins === 0) {
-                return back()->withErrors(['is_admin' => 'Tidak bisa mencabut peran admin dari admin terakhir.'])->withInput();
+        // Use database transaction to prevent race conditions
+        return \DB::transaction(function () use ($validated, $user) {
+            // Protect against removing the last admin - check with FOR UPDATE lock
+            $isAdmin = (bool)($validated['is_admin'] ?? false);
+            if (!$isAdmin && ($user->is_admin ?? false)) {
+                $otherAdmins = User::where('id', '!=', $user->id)
+                    ->where('is_admin', true)
+                    ->lockForUpdate() // Prevent race conditions
+                    ->count();
+                if ($otherAdmins === 0) {
+                    return back()->withErrors(['is_admin' => 'Tidak bisa mencabut peran admin dari admin terakhir.'])->withInput();
+                }
             }
-        }
 
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->is_admin = $isAdmin;
-        $user->save();
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            $user->is_admin = $isAdmin;
+            $user->save();
 
-        return redirect()->route('admin.users.edit', $user)->with('status', 'Pengguna berhasil diperbarui.');
+            return redirect()->route('admin.users.edit', $user)->with('status', 'Pengguna berhasil diperbarui.');
+        });
     }
 
     public function destroy(Request $request, User $user)

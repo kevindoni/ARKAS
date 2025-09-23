@@ -18,6 +18,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is the version of your application. This version is used when
+    | the framework needs to display the application version in footer or
+    | any other location as required by the application.
+    |
+    */
+
+    'version' => env('APP_VERSION', '1.1.0'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

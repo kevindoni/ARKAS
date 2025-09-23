@@ -15,13 +15,23 @@ class SecurityController extends Controller
     {
         $user = $request->user();
         if (! $user || ! $user->two_factor_secret) {
-            return response()->json(['uri' => null], 404);
+            return response()->json([
+                'uri' => null, 
+                'error' => 'Two-factor authentication not configured'
+            ], 404);
         }
 
         try {
             $secret = decrypt($user->two_factor_secret);
         } catch (\Throwable $e) {
-            return response()->json(['uri' => null], 500);
+            \Log::error('Failed to decrypt two-factor secret', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json([
+                'uri' => null, 
+                'error' => 'Failed to decrypt two-factor secret'
+            ], 500);
         }
 
         $issuer = rawurlencode(config('app.name', 'Laravel'));
