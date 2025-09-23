@@ -12,14 +12,15 @@
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; padding-right: 72px; }
     .small-box h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; margin: 0; }
     /* Prevent long currency text from overflowing the card */
-    .small-box h3.currency {
-        font-size: 1.35rem; /* slightly smaller to fit narrow column */
-        font-weight: 700;
-        line-height: 1.1;
-        margin: 0;
-        max-width: 100%;
-        white-space: normal; /* allow wrapping to next line (e.g., after 'Rp') */
-        overflow-wrap: break-word; /* wrap long continuous text if needed */
+        .small-box h3.currency {
+            font-size: 1.3rem; /* base size, will auto-shrink via JS if needed */
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0;
+            max-width: 100%;
+            white-space: nowrap;      /* keep currency on a single line */
+            overflow: hidden;         /* prevent spillover */
+            text-overflow: clip;      /* no ellipsis; we auto-fit instead */
     }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
@@ -590,6 +591,30 @@
 
 @push('scripts')
 <script>
+    // Auto-shrink currency values so they always fit on one line inside their box
+    function autoshrinkCurrency() {
+        const items = document.querySelectorAll('.small-box h3.currency');
+        items.forEach((el) => {
+            // Reset to base size before measuring
+            el.style.fontSize = '';
+            const parent = el.parentElement; // .inner
+            if (!parent) return;
+            const maxWidth = parent.clientWidth - 76; // leave space for right padding/icon
+            let size = parseFloat(window.getComputedStyle(el).fontSize);
+            const minSize = 12; // px safety minimum
+            // Reduce size until it fits on one line
+            // Guard: avoid infinite loops, max 12 steps
+            let steps = 0;
+            while (el.scrollWidth > maxWidth && size > minSize && steps < 12) {
+                size -= 1;
+                el.style.fontSize = size + 'px';
+                steps++;
+            }
+        });
+    }
+    // Run on load and when window resizes
+    window.addEventListener('load', autoshrinkCurrency);
+    window.addEventListener('resize', autoshrinkCurrency);
     // Update time every minute using browser time for snappy UX (server timezone already set)
     function updateClock() {
         const el = document.getElementById('current-time');
@@ -608,5 +633,7 @@
             location.reload();
         }
     }, 5 * 60 * 1000);
+    // Also re-run autoshrink after dynamic reloads of content
+    setTimeout(autoshrinkCurrency, 0);
 </script>
 @endpush
