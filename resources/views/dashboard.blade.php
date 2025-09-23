@@ -3,6 +3,8 @@
 @section('page_title', 'Dashboard Bendahara')
 
 @push('styles')
+<!-- Inter font for clean typography, especially numbers -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     .small-box { min-height: 140px; }
     .small-box .inner { min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
@@ -14,7 +16,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding-right: 100px; /* extra room for wide icons */
+        padding-right: 120px; /* additional room for wider currency values */
         position: relative;
         z-index: 1; /* keep text layer above icon */
     }
@@ -23,8 +25,8 @@
         .small-box h3.currency {
             display: flex;
             align-items: baseline;
-            gap: .25rem;
-            font-size: 1.36rem; /* base size, will auto-shrink via JS if needed */
+            gap: .2rem;
+            font-size: 1.6rem; /* increased base size further, will auto-shrink via JS if needed */
             font-weight: 700;
             line-height: 1;     /* tighter for single-line */
             margin: 0;
@@ -32,19 +34,35 @@
             white-space: nowrap;      /* keep currency on a single line */
             overflow: visible;        /* don't clip; JS ensures fit */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-            letter-spacing: 0.002em;  /* very subtle tracking */
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
-        .small-box h3.currency .prefix { font-size: 0.9em; font-weight: 600; opacity: .92; letter-spacing: 0; }
-        .small-box h3.currency .amount { display: inline-block; letter-spacing: 0; transform-origin: left center; }
+        .small-box h3.currency .prefix { 
+            font-size: 0.7em;  /* smaller prefix for more emphasis on amount */
+            font-weight: 600;
+            opacity: 0.82;
+            letter-spacing: 0;
+            padding-right: 0.1rem;
+        }
+        .small-box h3.currency .amount { 
+            display: inline-block; 
+            letter-spacing: -0.01em; 
+            transform-origin: left center; 
+            font-weight: 700;
+        }
         .small-box .icon { z-index: 0; }
 
-        /* Larger headline on desktop */
+        /* Progressively larger currency display on wider screens */
+        @media (min-width: 992px) {
+            .small-box h3.currency { font-size: 1.7rem; }
+        }
         @media (min-width: 1200px) {
-            .small-box h3.currency { font-size: 1.44rem; }
+            .small-box h3.currency { font-size: 1.9rem; }
         }
         @media (min-width: 1400px) {
-            .small-box h3.currency { font-size: 1.5rem; }
+            .small-box h3.currency { font-size: 2.1rem; }
+        }
+        @media (min-width: 1600px) {
+            .small-box h3.currency { font-size: 2.3rem; }
         }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
@@ -76,8 +94,20 @@
     .bg-gradient-pink .small-box-footer { color: #fff; }
     .bg-gradient-cyan { background: linear-gradient(45deg, #17a2b8, #3dd5f3) !important; color: #fff; }
     .bg-gradient-cyan .small-box-footer { color: #fff; }
-    /* Use default font for currency to avoid awkward gaps */
-    .currency { font-family: inherit; }
+    /* Use Inter for numbers - cleaner display */
+    .currency { 
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        padding: 0.05rem 0; /* slight padding to prevent clipping */
+    }
+    /* Apply improved shadows to all boxes for depth */
+    .small-box { 
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08); 
+        transition: box-shadow 0.2s ease, transform 0.1s ease;
+    }
+    .small-box:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+        transform: translateY(-1px);
+    }
     .transaction-item { border-left: 4px solid #007bff; padding-left: 10px; margin-bottom: 10px; }
     .transaction-date { font-size: 0.8rem; color: #6c757d; }
     .transaction-amount { font-weight: bold; }
@@ -86,8 +116,16 @@
 
     /* Responsive tweaks for small widths to keep currency inside box */
     @media (max-width: 575.98px) {
-        .small-box h3.currency { font-size: 1.2rem; line-height: 1.15; }
-        .small-box .inner { padding-right: 64px; }
+        .small-box h3.currency { 
+            font-size: 1.45rem; /* increased base size for small screens */
+            line-height: 1.15; 
+        }
+        .small-box .inner { 
+            padding-right: 82px; /* Adjusted padding for icon */
+        }
+        .small-box h3.currency .prefix { 
+            font-size: 0.7em; 
+        }
     }
 </style>
 @endpush
@@ -616,61 +654,95 @@
 
 @push('scripts')
 <script>
-    // Auto-shrink currency values so they always fit on one line inside their box
+    // Improved auto-shrink function for currency values so they always fit on one line inside their box
     function autoshrinkCurrency() {
         const items = document.querySelectorAll('.small-box h3.currency');
         items.forEach((el) => {
-            // Skip if already processed for this layout cycle
+            // Reset previous adjustments
             el.style.fontSize = '';
             const amount = el.querySelector('.amount') || el;
             amount.style.fontSize = '';
+            amount.style.transform = '';
+            
             const parent = el.parentElement; // .inner
             if (!parent) return;
+            
+            // Get container dimensions
             const cs = window.getComputedStyle(parent);
             const pr = parseFloat(cs.paddingRight) || 0;
             const pl = parseFloat(cs.paddingLeft) || 0;
-            // Reserve extra for icon area (AdminLTE icon size ~60-70px)
-            const iconReserve = Math.max(56, pr);
+            
+            // Calculate available space more accurately
+            // Reserve more space for icon area on AdminLTE cards
+            const iconReserve = Math.max(70, pr);
             const maxWidth = Math.max(0, parent.clientWidth - pl - iconReserve);
-            // Available width for amount is total minus prefix width and gap
+            
+            // Calculate prefix width precisely
             const prefix = el.querySelector('.prefix');
             let prefixWidth = 0;
             if (prefix) {
                 const rect = prefix.getBoundingClientRect();
-                prefixWidth = rect.width + 4; // include small gap
+                prefixWidth = rect.width + 6; // include gap with slight extra margin
             }
+            
+            // Calculate usable width for the amount
             const usable = Math.max(0, maxWidth - prefixWidth);
+            
+            // Get current font size
             let size = parseFloat(window.getComputedStyle(amount).fontSize);
-            // Min font-size by breakpoint so desktop stays readable
+            
+            // Set minimum font sizes based on viewport width for better readability
             const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-            let minSize = 12;
-            if (vw >= 1400) minSize = 15;
-            else if (vw >= 1200) minSize = 14;
-            else if (vw >= 992) minSize = 13;
-            let guard = 0;
-            // Use fractional decrements for smoother visual result
-            while (amount.scrollWidth > usable && size > minSize && guard < 30) {
-                size -= 0.6;
-                amount.style.fontSize = size + 'px';
-                guard++;
-            }
-            // If still overflowing at min size, scale down smoothly to fit
+            let minSize = 15; // increased base minimum size further
+            
+            if (vw >= 1600) minSize = 21;
+            else if (vw >= 1400) minSize = 19;
+            else if (vw >= 1200) minSize = 18;
+            else if (vw >= 992) minSize = 17;
+            else if (vw >= 768) minSize = 16;
+            
+            // Check if shrinking is needed
             if (amount.scrollWidth > usable) {
-                // Cap scale to avoid overly small/blurry text
-                const scale = Math.max(0.9, Math.min(1, usable / amount.scrollWidth));
-                amount.style.transform = `scale(${scale})`;
-            } else {
-                amount.style.transform = '';
+                // Use smaller decrements for smoother visual results
+                let guard = 0;
+                while (amount.scrollWidth > usable && size > minSize && guard < 30) {
+                    size -= 0.5; // smoother size reduction
+                    amount.style.fontSize = size + 'px';
+                    guard++;
+                }
+                
+                // If still overflowing at min size, apply scaling with transform
+                if (amount.scrollWidth > usable) {
+                    // Calculate optimal scale, but with limits to prevent excessive shrinking
+                    const scale = Math.max(0.92, Math.min(1, usable / amount.scrollWidth));
+                    amount.style.transform = `scale(${scale})`;
+                    // Add a tiny bit more padding to ensure no clipping
+                    el.style.paddingBottom = '2px';
+                }
             }
         });
     }
-    // Run on load and when window resizes
+    // Run on load and when window resizes with optimized timing
     window.addEventListener('DOMContentLoaded', autoshrinkCurrency);
     window.addEventListener('load', autoshrinkCurrency);
-    window.addEventListener('resize', autoshrinkCurrency);
+    
+    // Debounce resize to improve performance
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(autoshrinkCurrency, 100);
+    });
+    
+    // Multi-stage execution to handle various load timings
     window.addEventListener('load', () => {
-        // In case icon backgrounds/images load later
-        setTimeout(autoshrinkCurrency, 50);
+        // Run once immediately for initial display
+        autoshrinkCurrency();
+        
+        // Run again after short delay for fonts/icons to load
+        setTimeout(autoshrinkCurrency, 100);
+        
+        // Final pass after all resources and rendering completes
+        setTimeout(autoshrinkCurrency, 500);
     });
     // Update time every minute using browser time for snappy UX (server timezone already set)
     function updateClock() {
