@@ -13,7 +13,7 @@
 
 ---
 
-## � **Application Screenshots**
+## 📷 **Application Screenshots**
 
 <div align="center">
 
