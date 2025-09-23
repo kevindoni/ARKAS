@@ -32,11 +32,11 @@
             white-space: nowrap;      /* keep currency on a single line */
             overflow: visible;        /* don't clip; JS ensures fit */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-            letter-spacing: 0.006em;  /* subtle tracking for readability */
+            letter-spacing: 0.002em;  /* very subtle tracking */
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
-        .small-box h3.currency .prefix { font-size: 0.88em; font-weight: 600; opacity: .9; letter-spacing: 0; }
-        .small-box h3.currency .amount { display: inline-block; letter-spacing: 0.01em; transform-origin: left center; }
+        .small-box h3.currency .prefix { font-size: 0.9em; font-weight: 600; opacity: .92; letter-spacing: 0; }
+        .small-box h3.currency .amount { display: inline-block; letter-spacing: 0; transform-origin: left center; }
         .small-box .icon { z-index: 0; }
 
         /* Larger headline on desktop */
@@ -76,7 +76,8 @@
     .bg-gradient-pink .small-box-footer { color: #fff; }
     .bg-gradient-cyan { background: linear-gradient(45deg, #17a2b8, #3dd5f3) !important; color: #fff; }
     .bg-gradient-cyan .small-box-footer { color: #fff; }
-    .currency { font-family: 'Courier New', monospace; }
+    /* Use default font for currency to avoid awkward gaps */
+    .currency { font-family: inherit; }
     .transaction-item { border-left: 4px solid #007bff; padding-left: 10px; margin-bottom: 10px; }
     .transaction-date { font-size: 0.8rem; color: #6c757d; }
     .transaction-amount { font-weight: bold; }
@@ -655,7 +656,8 @@
             }
             // If still overflowing at min size, scale down smoothly to fit
             if (amount.scrollWidth > usable) {
-                const scale = Math.max(0.85, usable / amount.scrollWidth);
+                // Cap scale to avoid overly small/blurry text
+                const scale = Math.max(0.9, Math.min(1, usable / amount.scrollWidth));
                 amount.style.transform = `scale(${scale})`;
             } else {
                 amount.style.transform = '';
