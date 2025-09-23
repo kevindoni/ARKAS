@@ -25,12 +25,12 @@ _Professional dashboard dengan tampilan financial cards dan real-time data_
 ### 📊 **BKU Management Interface**
 
 ![BKU Management](screenshot/2.jpg)
-_Interface manajemen BKU dengan fitur import Excel dan tracking saldo_
+_Interface manajemen Data Sekolah_
 
 ### 👥 **Admin Panel**
 
 ![Admin Panel](screenshot/3.jpg)
-_Panel admin untuk subscription monitoring dan user management_
+_Interface manajemen BKU dengan fitur import Excel dan tracking saldo_
 
 </div>
 
