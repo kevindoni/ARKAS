@@ -136,7 +136,7 @@ $appName = config('app.name');    // Returns: "Arkas App"
 
 ---
 
-## �📋 **Requirements**
+## 📋 **Requirements**
 
 -   **PHP** >= 8.4.0
 -   **Laravel** >= 12.x
@@ -370,7 +370,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## � **Changelog**
+## **Changelog**
 
 ### **[1.1.0] - 2025-09-23**
 
@@ -419,7 +419,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## �🙏 **Acknowledgments**
+## 🙏 **Acknowledgments**
 
 -   **Laravel Framework** - Robust PHP framework
 -   **AdminLTE 3** - Beautiful admin dashboard template
