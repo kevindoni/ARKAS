@@ -16,7 +16,7 @@
             display: flex;
             align-items: baseline;
             gap: .25rem;
-            font-size: 1.32rem; /* base size, will auto-shrink via JS if needed */
+            font-size: 1.36rem; /* base size, will auto-shrink via JS if needed */
             font-weight: 700;
             line-height: 1;     /* tighter for single-line */
             margin: 0;
@@ -24,11 +24,19 @@
             white-space: nowrap;      /* keep currency on a single line */
             overflow: hidden;         /* prevent spillover */
             text-overflow: clip;      /* no ellipsis; we auto-fit instead */
-            letter-spacing: 0.005em;  /* subtle tracking for readability */
+            letter-spacing: 0.006em;  /* subtle tracking for readability */
             font-variant-numeric: tabular-nums; /* stable width digits */
         }
         .small-box h3.currency .prefix { font-size: 0.88em; font-weight: 600; opacity: .9; letter-spacing: 0; }
         .small-box h3.currency .amount { letter-spacing: 0.01em; }
+
+        /* Larger headline on desktop */
+        @media (min-width: 1200px) {
+            .small-box h3.currency { font-size: 1.44rem; }
+        }
+        @media (min-width: 1400px) {
+            .small-box h3.currency { font-size: 1.5rem; }
+        }
     .small-box p { font-size: .8rem; margin-bottom: 0; }
     .small-box .icon { top: 8px; }
     .card .card-title { font-weight: 600; }
@@ -623,11 +631,16 @@
             }
             const usable = Math.max(0, maxWidth - prefixWidth);
             let size = parseFloat(window.getComputedStyle(amount).fontSize);
-            const minSize = 12; // px safety minimum
+            // Min font-size by breakpoint so desktop stays readable
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            let minSize = 12;
+            if (vw >= 1400) minSize = 15;
+            else if (vw >= 1200) minSize = 14;
+            else if (vw >= 992) minSize = 13;
             let guard = 0;
             // Use fractional decrements for smoother visual result
-            while (amount.scrollWidth > usable && size > minSize && guard < 40) {
-                size -= 0.5;
+            while (amount.scrollWidth > usable && size > minSize && guard < 30) {
+                size -= 0.6;
                 amount.style.fontSize = size + 'px';
                 guard++;
             }
